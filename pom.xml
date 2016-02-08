@@ -22,6 +22,10 @@
 
 		<java.source.version>1.7</java.source.version>
 		<java.target.version>1.7</java.target.version>
+		
+		<!-- Plugins -->
+		<maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
+		<maven-jar-plugin.version>2.6</maven-jar-plugin.version>
 
 		<!-- Dependencies -->
 		<product-register-service.version>1.0</product-register-service.version>
