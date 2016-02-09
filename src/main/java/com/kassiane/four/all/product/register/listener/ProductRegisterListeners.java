@@ -1,51 +1,30 @@
 package com.kassiane.four.all.product.register.listener;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import com.kassiane.four.all.product.register.controller.ProductEdittionController;
-import com.kassiane.four.all.product.register.view.ProductEdittion;
-import com.kassiane.four.all.product.register.view.ProductRegister;
+import com.kassiane.four.all.product.register.view.ProductRegisterView;
 
 public class ProductRegisterListeners {
 
-    private final ProductRegister productRegister;
+    private final ProductRegisterView productRegisterView;
     private final ProductEdittionController productEdittionController;
 
     public ProductRegisterListeners(final ProductEdittionController productEdittionController,
-            final ProductRegister productRegister) {
+            final ProductRegisterView productRegister) {
 
         this.productEdittionController = productEdittionController;
-        this.productRegister = productRegister;
+        this.productRegisterView = productRegister;
     }
 
     private void addNewProductButtonListener() {
-        final ProductEdittionController finalProductEdittionController = this.productEdittionController;
-        this.productRegister.getNewProduct().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent event) {
-                final ProductEdittion productEdittion = finalProductEdittionController.getProductEdittion();
-                productEdittion.setVisible(true);
-            }
-        });
+        this.productRegisterView.getNewProduct().addActionListener(new NewProductButtonListener(this.productEdittionController));
     }
 
     private void addProductEdittionListener() {
-        this.productEdittionController.getProductEdittion().getConfirmButton()
-                .addPropertyChangeListener(new PropertyChangeListener() {
-
-                    @Override
-                    public void propertyChange(final PropertyChangeEvent evt) {
-                        if (evt.getPropertyName().equals(ProductEdittionListeners.ADD_NEW_PRODUCT)) {
-                            System.out.println("Vai atualizar.........");
-                            ProductRegisterListeners.this.productRegister
-                    .addRow(ProductRegisterListeners.this.productEdittionController.getProductEdittion()
-                            .getNewProduct());
-                        }
-                    }
-                });
+        this.productEdittionController
+                .getProductEdittion()
+                .getConfirmButton()
+        .addPropertyChangeListener(
+                        new ConfirmButtonPropertyChangeListener(this.productRegisterView, this.productEdittionController));
     }
 
     public void controllerControl(final ProductEdittionController productEdittionController) {
@@ -53,7 +32,7 @@ public class ProductRegisterListeners {
         this.addProductEdittionListener();
     }
 
-    public ProductRegister getProductRegister() {
-        return this.productRegister;
+    public ProductRegisterView getProductRegister() {
+        return this.productRegisterView;
     }
 }

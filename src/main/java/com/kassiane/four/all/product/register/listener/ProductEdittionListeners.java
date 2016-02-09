@@ -2,84 +2,56 @@ package com.kassiane.four.all.product.register.listener;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import com.kassiane.four.all.product.register.action.ProductEdittionAction;
-import com.kassiane.four.all.product.register.view.ProductEdittion;
+import com.kassiane.four.all.product.register.service.ProductService;
+import com.kassiane.four.all.product.register.view.ProductEdittionView;
 
 public class ProductEdittionListeners {
 
-    public static final String ADD_NEW_PRODUCT = "Add new Product";
-
-    private final ProductEdittion productEdittion;
+    private final ProductEdittionView productEdittionView;
     ProductEdittionAction productEdittionAction;
 
-    public ProductEdittionListeners(final ProductEdittion productEdittion) {
-        this.productEdittion = productEdittion;
-        this.productEdittionAction = new ProductEdittionAction(this.productEdittion);
+    public ProductEdittionListeners(final ProductEdittionView productEdittion, final ProductService productService) {
+        this.productEdittionView = productEdittion;
+        this.productEdittionAction = new ProductEdittionAction(this.productEdittionView, productService);
     }
 
     public void addCancelButtonListener() {
-        this.productEdittion.getCancelButton().addActionListener(new ActionListener() {
+        this.productEdittionView.getCancelButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent event) {
-                ProductEdittionListeners.this.productEdittion.getjDialog().dispose();
+                ProductEdittionListeners.this.productEdittionView.getJDialog().dispose();
+                ProductEdittionListeners.this.productEdittionView.clearProductDTO();
             }
         });
     }
 
     public void addImageIconJLabelListener() {
-        this.productEdittion.getImageIconJLabel().addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(final MouseEvent e) {
-                ProductEdittionListeners.this.productEdittionAction.chooseNewImageIcon();
-            }
-
-            @Override
-            public void mousePressed(final MouseEvent e) {
-            }
-
-            @Override
-            public void mouseReleased(final MouseEvent e) {
-            }
-
-            @Override
-            public void mouseEntered(final MouseEvent e) {
-            }
-
-            @Override
-            public void mouseExited(final MouseEvent e) {
-            }
-        });
+        this.productEdittionView.getImageIconJLabel().addMouseListener(new ImageIconJLabelListener(this.productEdittionAction));
     }
 
     public void addConfirmButtonListener() {
-        this.productEdittion.getConfirmButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent event) {
-                ProductEdittionListeners.this.productEdittion.getConfirmButton().firePropertyChange(ADD_NEW_PRODUCT, false, true);
-                ProductEdittionListeners.this.productEdittion.getjDialog().dispose();
+        this.productEdittionView.getConfirmButton().addActionListener(
+                new ConfirmButtonActionListener(this.productEdittionAction, this.productEdittionView));
 
-            }
-        });
     }
 
-    public ActionListener[] getCancelButtonListener() {
-        return this.productEdittion.getCancelButton().getListeners(ActionListener.class);
+    public void addProductNameTextFieldListener() {
+        this.productEdittionView.getProductNameTextField().addFocusListener(
+                new ProductNameTextFieldListener(this.productEdittionView));
     }
 
-    public ActionListener[] getConfirmButtonListener() {
-        return this.productEdittion.getConfirmButton().getListeners(ActionListener.class);
-    }
-
-    public MouseListener[] getImageIconJLabelListener() {
-        return this.productEdittion.getCancelButton().getListeners(MouseListener.class);
+    public void addProductPriceTextFieldListener() {
+        this.productEdittionView.getProductPriceTextField().addFocusListener(
+                new ProductPriceTextFieldListener(this.productEdittionView));
     }
 
     public void addListeners() {
         this.addCancelButtonListener();
         this.addConfirmButtonListener();
         this.addImageIconJLabelListener();
+        this.addProductPriceTextFieldListener();
+        this.addProductNameTextFieldListener();
     }
 }

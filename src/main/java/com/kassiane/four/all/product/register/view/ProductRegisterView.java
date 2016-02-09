@@ -14,13 +14,14 @@ import javax.swing.JTable;
 import javax.swing.LayoutStyle;
 import javax.swing.table.DefaultTableModel;
 
-import com.kassiane.four.all.product.register.dao.ProductDAO;
-import com.kassiane.four.all.product.register.domain.Product;
+import com.kassiane.four.all.product.register.dto.ProductDTO;
 import com.kassiane.four.all.product.register.image.util.DefaultImage;
 import com.kassiane.four.all.product.register.image.util.ImageIconResizer;
 import com.kassiane.four.all.product.register.listener.ProductRegisterListeners;
+import com.kassiane.four.all.product.register.service.ProductService;
+import com.kassiane.four.all.product.register.service.domain.Product;
 
-public class ProductRegister {
+public class ProductRegisterView {
 
     private static final String TITLE = "Cadastro de Produtos";
     private final JButton newProduct = new JButton("Novo Produto");
@@ -28,13 +29,11 @@ public class ProductRegister {
 
     private DefaultTableModel model;
     private ImageIcon defaultImage;
-    private final ProductDAO productDAO;
     private final JTable productsTable;
     private ProductRegisterListeners productRegisterController;
 
-    public ProductRegister(final ProductDAO productDAO) {
+    public ProductRegisterView(final ProductService productService) {
         this.model = null;
-        this.productDAO = productDAO;
         this.setDefaultImageIcon();
         final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         final double width = screenSize.getWidth();
@@ -50,7 +49,7 @@ public class ProductRegister {
         groupLayout.setAutoCreateContainerGaps(true);
         groupLayout.setAutoCreateGaps(true);
 
-        this.productsTable = this.createProductsTable();
+        this.productsTable = this.createProductsTable(productService);
         final Container productsPane = new JScrollPane(this.productsTable);
 
         this.setHorizontalGroup(this.newProduct, groupLayout, productsPane);
@@ -65,7 +64,7 @@ public class ProductRegister {
                 .addGroup(groupLayout.createParallelGroup().addComponent(newProduct))
                 .addGroup(groupLayout.createParallelGroup().addComponent(productsPane))
 
-        );
+                );
     }
 
     private void setHorizontalGroup(final JButton newProduct, final GroupLayout groupLayout, final Container productsPane) {
@@ -73,14 +72,14 @@ public class ProductRegister {
                 .createParallelGroup()
                 .addGroup(
                         groupLayout
-                                .createSequentialGroup()
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
-                                        Short.MAX_VALUE).addComponent(newProduct))
-                .addGroup(groupLayout.createSequentialGroup().addComponent(productsPane)));
+                        .createSequentialGroup()
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
+                                Short.MAX_VALUE).addComponent(newProduct))
+                                .addGroup(groupLayout.createSequentialGroup().addComponent(productsPane)));
     }
 
-    private JTable createProductsTable() {
-        final List<Product> products = this.productDAO.listProducts();
+    private JTable createProductsTable(final ProductService productService) {
+        final List<Product> products = productService.listProducts();
         final JTable productsTable = new JTable(0, 3);
         productsTable.setRowHeight(IMAGE_HEIGHT);
 
@@ -105,10 +104,10 @@ public class ProductRegister {
         return productsTable;
     }
 
-    public void addRow(final Product product) {
+    public void addRow(final ProductDTO product) {
         final ImageIconResizer imageIconResizer = new ImageIconResizer();
-        final ImageIcon resized = imageIconResizer.resizeImageIcon(product.getIcon(), IMAGE_HEIGHT);
-        this.model.addRow(new Object[] { resized, product.getName(), product.getPrice() });
+        final ImageIcon resized = imageIconResizer.resizeImageIcon(product.getImageIcon(), IMAGE_HEIGHT);
+        this.model.addRow(new Object[] { resized, product.getProductName(), product.getProductPrice() });
     }
 
     private DefaultTableModel changeTableModelForFirstColumnAsImageIcon() {
@@ -139,10 +138,6 @@ public class ProductRegister {
 
     private ImageIcon getDefaultImageIcon() {
         return this.defaultImage;
-    }
-
-    public ProductDAO getProductDAO() {
-        return this.productDAO;
     }
 
     public JButton getNewProduct() {

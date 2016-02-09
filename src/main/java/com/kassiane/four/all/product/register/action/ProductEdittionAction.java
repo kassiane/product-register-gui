@@ -1,11 +1,11 @@
 package com.kassiane.four.all.product.register.action;
 
 import java.awt.Image;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.imageio.ImageIO;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -13,18 +13,21 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.springframework.dao.DataAccessException;
 
-import com.kassiane.four.all.product.register.domain.Product;
+import com.kassiane.four.all.product.register.dto.ProductDTO;
 import com.kassiane.four.all.product.register.image.util.ImageIconResizer;
 import com.kassiane.four.all.product.register.screen.data.checker.ProductEdittionDataChecker;
 import com.kassiane.four.all.product.register.service.ProductService;
-import com.kassiane.four.all.product.register.view.ProductEdittion;
+import com.kassiane.four.all.product.register.service.domain.Product;
+import com.kassiane.four.all.product.register.view.ProductEdittionView;
 
 public class ProductEdittionAction {
 
-    private final ProductEdittion productEdittion;
+    private final ProductEdittionView productEdittion;
+    private final ProductService productService;
 
-    public ProductEdittionAction(final ProductEdittion productEdittion) {
+    public ProductEdittionAction(final ProductEdittionView productEdittion, final ProductService productService) {
         this.productEdittion = productEdittion;
+        this.productService = productService;
     }
 
     public void chooseNewImageIcon() {
@@ -33,42 +36,43 @@ public class ProductEdittionAction {
         fileChooser.setFileFilter(filter);
         final int returnValue = fileChooser.showOpenDialog(null);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
-            this.productEdittion.setImageFile(fileChooser.getSelectedFile());
+            final String productName = this.productEdittion.getProductModel().getProductName();
+            final String productPrice = this.productEdittion.getProductModel().getProductPrice();
+            final File imageFile = fileChooser.getSelectedFile();
+            ImageIcon imageIcon = this.productEdittion.getProductModel().getImageIcon();
+
             try {
-                final Image image = ImageIO.read(this.productEdittion.getImageFile());
+                final Image image = ImageIO.read(imageFile);
                 final ImageIconResizer imageIconResizer = new ImageIconResizer();
-                final Icon imageIcon = imageIconResizer.imageToImageIconResized(image, ProductEdittion.getImageHeight());
-                this.productEdittion.getImageIconJLabel().setIcon(imageIcon);
+                imageIcon = imageIconResizer.imageToImageIconResized(image, ProductEdittionView.IMAGE_HEIGHT);
             } catch (final IOException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
+            final ProductDTO productModel = new ProductDTO(productName, productPrice, imageIcon, imageFile);
+            this.productEdittion.setProductModel(productModel);
+            this.productEdittion.setFields(productModel);
         }
     }
 
-    public Product addNewProduct() {
-        final int id = 0;
-        final String name = this.productEdittion.getProductNameTextArea().getText();
-        final String priceString = this.productEdittion.getProductPriceTextArea().getText();
+    public void addNewProduct(final ProductDTO productDTO) {
+        final String name = productDTO.getProductName();
+        final String priceString = productDTO.getProductPrice();
 
-        final ProductService productRegister = new ProductService(this.productEdittion.getProductDAO());
         final ProductEdittionDataChecker productEdittionDataChecker = new ProductEdittionDataChecker(name, priceString);
-        Product product = null;
         try {
             final float price = productEdittionDataChecker.checkPrice();
-            product = new Product(id, name, price, (ImageIcon) this.productEdittion.getImageIconJLabel().getIcon());
-            productRegister.addProduct(product, this.productEdittion.getImageFile());
-            this.productEdittion.setNewProduct(product);
-            System.out.println(product.toString());
+            final Product product = new Product(0, name, price, productDTO.getImageIcon());
+            // product checker e alguem q retorne um new product
+            this.productService.addProduct(product, this.productEdittion.getProductModel().getImageFile());
 
         } catch (DataAccessException | SQLException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (final IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(this.productEdittion.getjDialog(), e.getMessage(), "Formato inválido",
+            JOptionPane.showMessageDialog(this.productEdittion.getJDialog(), e.getMessage(), "Formato inválido",
                     JOptionPane.ERROR_MESSAGE);
         }
-        return product;
     }
 
 }
