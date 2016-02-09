@@ -3,26 +3,24 @@ package com.kassiane.four.all.product.register.dto;
 import java.util.List;
 
 import javax.swing.ImageIcon;
-import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 
 import com.kassiane.four.all.product.register.formatter.PriceFormatter;
 import com.kassiane.four.all.product.register.image.util.ImageIconResizer;
 import com.kassiane.four.all.product.register.service.domain.Product;
 import com.kassiane.four.all.product.register.view.ProductRegisterView;
 
-public class ProductTableModel extends AbstractTableModel {
+public class ProductTableModel extends DefaultTableModel {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
-    private final String[] columnNames = { "Imagem", "Nome", "Preço" };
+    private static final String[] columnNames = { "Imagem", "Nome", "Preço" };
 
     public int imageHight;
     public ImageIcon defaultImage;
 
     public ProductTableModel(final int imageHight, final ImageIcon defaultImage) {
+        super(columnNames, 0);
         this.imageHight = imageHight;
         this.defaultImage = defaultImage;
     }
@@ -54,7 +52,6 @@ public class ProductTableModel extends AbstractTableModel {
     }
 
     public void addProductListToTableModel(final List<Product> products) {
-        this.products = products;
 
         if (products != null) {
             for (final Product product : products) {
@@ -73,23 +70,6 @@ public class ProductTableModel extends AbstractTableModel {
                 this.fireTableDataChanged();
             }
         }
-    }
-
-    @Override
-    public int getRowCount() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public int getColumnCount() {
-        return this.columnNames.length;
-    }
-
-    @Override
-    public Object getValueAt(final int rowIndex, final int columnIndex) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }
