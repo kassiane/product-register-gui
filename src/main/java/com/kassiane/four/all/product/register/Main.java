@@ -24,7 +24,8 @@ public class Main extends JFrame {
 
         final ProductService productService = new ProductService(productDAO);
 
-        final ImageIcon defaultProductEdittionImageIcon = new DefaultImage().getDefaultImageIcon(ProductEdittionView.IMAGE_HEIGHT);
+        final ImageIcon defaultProductEdittionImageIcon = new DefaultImage()
+                .getDefaultImageIcon(ProductEdittionView.IMAGE_HEIGHT);
 
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -34,8 +35,10 @@ public class Main extends JFrame {
                 final ProductEdittionView productEdittion = new ProductEdittionView(defaultProductEdittionImageIcon);
                 final ProductEdittionController productEdittionController = new ProductEdittionController(productEdittion,
                         productService);
-
-                final ProductRegisterView productRegisterMainFrame = new ProductRegisterView(productService);
+                final ImageIcon defaultProductRegisterImageIcon = new DefaultImage()
+                        .getDefaultImageIcon(ProductRegisterView.IMAGE_HEIGHT);
+                final ProductRegisterView productRegisterMainFrame = new ProductRegisterView(productService,
+                        defaultProductRegisterImageIcon);
                 final ProductRegisterListeners productRegisterMainFramecontroller = new ProductRegisterListeners(
                         productEdittionController, productRegisterMainFrame);
                 productRegisterMainFramecontroller.controllerControl(productEdittionController);

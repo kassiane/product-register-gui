@@ -11,22 +11,22 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import org.springframework.dao.DataAccessException;
-
 import com.kassiane.four.all.product.register.dto.ProductDTO;
 import com.kassiane.four.all.product.register.image.util.ImageIconResizer;
-import com.kassiane.four.all.product.register.screen.data.checker.ProductEdittionDataChecker;
+import com.kassiane.four.all.product.register.mapper.ProductDTOToProductMapper;
+import com.kassiane.four.all.product.register.screen.data.checker.ProductDTODataChecker;
 import com.kassiane.four.all.product.register.service.ProductService;
 import com.kassiane.four.all.product.register.service.domain.Product;
 import com.kassiane.four.all.product.register.view.ProductEdittionView;
 
 public class ProductEdittionAction {
 
-    private final ProductEdittionView productEdittion;
+    private final ProductEdittionView productEdittionView;
     private final ProductService productService;
+    public static final String ADD_NEW_PRODUCT = "Add new Product";
 
     public ProductEdittionAction(final ProductEdittionView productEdittion, final ProductService productService) {
-        this.productEdittion = productEdittion;
+        this.productEdittionView = productEdittion;
         this.productService = productService;
     }
 
@@ -36,10 +36,10 @@ public class ProductEdittionAction {
         fileChooser.setFileFilter(filter);
         final int returnValue = fileChooser.showOpenDialog(null);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
-            final String productName = this.productEdittion.getProductModel().getProductName();
-            final String productPrice = this.productEdittion.getProductModel().getProductPrice();
+            final String productName = this.productEdittionView.getProductModel().getProductName();
+            final String productPrice = this.productEdittionView.getProductModel().getProductPrice();
             final File imageFile = fileChooser.getSelectedFile();
-            ImageIcon imageIcon = this.productEdittion.getProductModel().getImageIcon();
+            ImageIcon imageIcon = this.productEdittionView.getProductModel().getImageIcon();
 
             try {
                 final Image image = ImageIO.read(imageFile);
@@ -50,29 +50,32 @@ public class ProductEdittionAction {
                 e1.printStackTrace();
             }
             final ProductDTO productModel = new ProductDTO(productName, productPrice, imageIcon, imageFile);
-            this.productEdittion.setProductModel(productModel);
-            this.productEdittion.setFields(productModel);
+            this.productEdittionView.setProductModel(productModel);
+            this.productEdittionView.setFields(productModel);
         }
     }
 
     public void addNewProduct(final ProductDTO productDTO) {
-        final String name = productDTO.getProductName();
-        final String priceString = productDTO.getProductPrice();
+        final ProductDTODataChecker productDTODataChecker = new ProductDTODataChecker(productDTO);
 
-        final ProductEdittionDataChecker productEdittionDataChecker = new ProductEdittionDataChecker(name, priceString);
         try {
-            final float price = productEdittionDataChecker.checkPrice();
-            final Product product = new Product(0, name, price, productDTO.getImageIcon());
-            // product checker e alguem q retorne um new product
-            this.productService.addProduct(product, this.productEdittion.getProductModel().getImageFile());
+            final ProductDTO checkedProductDTO = productDTODataChecker.checkedProductDTO();
+            this.productEdittionView.setProductModel(checkedProductDTO);
 
-        } catch (DataAccessException | SQLException | IOException e) {
-            // TODO Auto-generated catch block
+            final ProductDTOToProductMapper productDTOToProductMapper = new ProductDTOToProductMapper();
+            final Product product = productDTOToProductMapper.mapToProduct(checkedProductDTO);
+            this.productService.addProduct(product, this.productEdittionView.getProductModel().getImageFile());
+
+            this.productEdittionView.getConfirmButton().firePropertyChange(ADD_NEW_PRODUCT, false, true);
+            this.productEdittionView.getJDialog().dispose();
+            this.productEdittionView.clearProductDTO();
+        } catch (SQLException | IOException e) {
+            JOptionPane.showMessageDialog(this.productEdittionView.getJDialog(), e.getMessage(), "Erro!",
+                    JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         } catch (final IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(this.productEdittion.getJDialog(), e.getMessage(), "Formato inválido",
+            JOptionPane.showMessageDialog(this.productEdittionView.getJDialog(), e.getMessage(), "Erro!",
                     JOptionPane.ERROR_MESSAGE);
         }
     }
-
 }
