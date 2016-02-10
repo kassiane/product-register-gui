@@ -3,12 +3,12 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.kassiane.4all</groupId>
-	<artifactId>product-register-GUI</artifactId>
+	<groupId>com.kassiane.four.all</groupId>
+	<artifactId>product-register-gui</artifactId>
 	<version>1.0</version>
 	<packaging>jar</packaging>
 
-	<name>product-register-GUI</name>
+	<name>product-register-gui</name>
 
 	<properties>
 
@@ -38,7 +38,7 @@
 		<dependencies>
 			<!-- *** PRODUCT REGISTER SERVICES *** -->
 			<dependency>
-				<groupId>com.kassiane.4all</groupId>
+				<groupId>com.kassiane.four.all</groupId>
 				<artifactId>product-register-service</artifactId>
 				<version>${product-register-service.version}</version>
 			</dependency>
@@ -62,7 +62,7 @@
 	<dependencies>
 		<!-- *** PRODUCT REGISTER SERVICES *** -->
 		<dependency>
-			<groupId>com.kassiane.4all</groupId>
+			<groupId>com.kassiane.four.all</groupId>
 			<artifactId>product-register-service</artifactId>
 		</dependency>
 		
@@ -83,19 +83,26 @@
 		<plugins>
 
 			<plugin>
-				<!-- Build an executable JAR -->
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>${maven-jar-plugin.version}</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>com.kassiane.4all.product.register.Main</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
+			  <artifactId>maven-assembly-plugin</artifactId>
+			  <configuration>
+			    <archive>
+			      <manifest>
+			        <mainClass>com.kassiane.four.all.product.register.Main</mainClass>
+			      </manifest>
+			    </archive>
+			    <descriptorRefs>
+			      <descriptorRef>jar-with-dependencies</descriptorRef>
+			    </descriptorRefs>
+			  </configuration>
+			  <executions>
+			    <execution>
+			      <id>make-assembly</id>
+			      <phase>package</phase>
+			      <goals>
+			        <goal>single</goal>
+			      </goals>
+			    </execution>
+			  </executions>
 			</plugin>
 
 			<plugin>
