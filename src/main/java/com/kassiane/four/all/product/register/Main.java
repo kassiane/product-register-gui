@@ -26,22 +26,21 @@ public class Main extends JFrame {
 
         final ImageIcon defaultProductEdittionImageIcon = new DefaultImage()
                 .getDefaultImageIcon(ProductEdittionView.IMAGE_HEIGHT);
+        final ImageIcon defaultProductRegisterImageIcon = new DefaultImage()
+                .getDefaultImageIcon(ProductRegisterView.IMAGE_HEIGHT);
 
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
 
-                final ProductEdittionView productEdittion = new ProductEdittionView(defaultProductEdittionImageIcon);
-                final ProductEdittionController productEdittionController = new ProductEdittionController(productEdittion,
+                final ProductEdittionView productEdittionView = new ProductEdittionView(defaultProductEdittionImageIcon);
+                final ProductEdittionController productEdittionController = new ProductEdittionController(productEdittionView,
                         productService);
-                final ImageIcon defaultProductRegisterImageIcon = new DefaultImage()
-                        .getDefaultImageIcon(ProductRegisterView.IMAGE_HEIGHT);
-                final ProductRegisterView productRegisterMainFrame = new ProductRegisterView(productService,
+                final ProductRegisterView productRegisterView = new ProductRegisterView(productService,
                         defaultProductRegisterImageIcon);
-                final ProductRegisterListeners productRegisterMainFramecontroller = new ProductRegisterListeners(
-                        productEdittionController, productRegisterMainFrame);
-                productRegisterMainFramecontroller.controllerControl(productEdittionController);
+                final ProductRegisterListeners productRegisterListeners = new ProductRegisterListeners(productEdittionController,
+                        productRegisterView, productService);
             }
 
         });

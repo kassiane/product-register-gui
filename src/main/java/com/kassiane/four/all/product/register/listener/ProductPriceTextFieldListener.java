@@ -25,12 +25,13 @@ public class ProductPriceTextFieldListener implements FocusListener {
 
     @Override
     public void focusLost(final FocusEvent e) {
+        final long productId = this.productEdittionView.getProductModel().getProductId();
         final String productName = this.productEdittionView.getProductModel().getProductName();
         final String productPrice = this.productEdittionView.getProductPriceTextField().getText();
         final ImageIcon imageIcon = this.productEdittionView.getProductModel().getImageIcon();
         final File imageFile = this.productEdittionView.getProductModel().getImageFile();
 
-        final ProductDTO productModel = new ProductDTO(productName, productPrice, imageIcon, imageFile);
+        final ProductDTO productModel = new ProductDTO(productId, productName, productPrice, imageIcon, imageFile);
         this.productEdittionView.setProductModel(productModel);
     }
 

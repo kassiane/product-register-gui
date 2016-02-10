@@ -36,6 +36,7 @@ public class ProductEdittionAction {
         fileChooser.setFileFilter(filter);
         final int returnValue = fileChooser.showOpenDialog(null);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
+            final long productId = this.productEdittionView.getProductModel().getProductId();
             final String productName = this.productEdittionView.getProductModel().getProductName();
             final String productPrice = this.productEdittionView.getProductModel().getProductPrice();
             final File imageFile = fileChooser.getSelectedFile();
@@ -49,7 +50,7 @@ public class ProductEdittionAction {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
-            final ProductDTO productModel = new ProductDTO(productName, productPrice, imageIcon, imageFile);
+            final ProductDTO productModel = new ProductDTO(productId, productName, productPrice, imageIcon, imageFile);
             this.productEdittionView.setProductModel(productModel);
             this.productEdittionView.setFields(productModel);
         }
@@ -59,12 +60,21 @@ public class ProductEdittionAction {
         final ProductDTODataChecker productDTODataChecker = new ProductDTODataChecker(productDTO);
 
         try {
-            final ProductDTO checkedProductDTO = productDTODataChecker.checkedProductDTO();
-            this.productEdittionView.setProductModel(checkedProductDTO);
+
+            productDTODataChecker.checkProduct();
 
             final ProductDTOToProductMapper productDTOToProductMapper = new ProductDTOToProductMapper();
-            final Product product = productDTOToProductMapper.mapToProduct(checkedProductDTO);
-            this.productService.addProduct(product, this.productEdittionView.getProductModel().getImageFile());
+            final Product product = productDTOToProductMapper.mapToProduct(productDTO);
+
+            final long productId = this.productService.addProduct(product, this.productEdittionView.getProductModel()
+                    .getImageFile());
+            final String productName = productDTO.getProductName();
+            final String productPrice = productDTO.getProductPrice();
+            final File imageFile = productDTO.getImageFile();
+            final ImageIcon imageIcon = productDTO.getImageIcon();
+
+            final ProductDTO newProduct = new ProductDTO(productId, productName, productPrice, imageIcon, imageFile);
+            this.productEdittionView.setProductModel(newProduct);
 
             this.productEdittionView.getConfirmButton().firePropertyChange(ADD_NEW_PRODUCT, false, true);
             this.productEdittionView.getJDialog().dispose();

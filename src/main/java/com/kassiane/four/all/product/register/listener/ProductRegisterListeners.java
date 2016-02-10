@@ -1,18 +1,23 @@
 package com.kassiane.four.all.product.register.listener;
 
 import com.kassiane.four.all.product.register.controller.ProductEdittionController;
+import com.kassiane.four.all.product.register.service.ProductService;
 import com.kassiane.four.all.product.register.view.ProductRegisterView;
 
 public class ProductRegisterListeners {
 
     private final ProductRegisterView productRegisterView;
     private final ProductEdittionController productEdittionController;
+    private final ProductService productService;
 
     public ProductRegisterListeners(final ProductEdittionController productEdittionController,
-            final ProductRegisterView productRegister) {
+            final ProductRegisterView productRegister, final ProductService productService) {
 
         this.productEdittionController = productEdittionController;
         this.productRegisterView = productRegister;
+        this.productService = productService;
+
+        this.addListeners();
     }
 
     private void addNewProductButtonListener() {
@@ -27,12 +32,15 @@ public class ProductRegisterListeners {
                         new ConfirmButtonPropertyChangeListener(this.productRegisterView, this.productEdittionController));
     }
 
-    public void controllerControl(final ProductEdittionController productEdittionController) {
-        this.addNewProductButtonListener();
-        this.addProductEdittionListener();
+    private void addProductsTableListener() {
+        this.productRegisterView.getProductsTable().getModel()
+                .addTableModelListener(new ProductTableListener(this.productRegisterView, this.productService));
     }
 
-    public ProductRegisterView getProductRegister() {
-        return this.productRegisterView;
+    public void addListeners() {
+        this.addNewProductButtonListener();
+        this.addProductEdittionListener();
+        this.addProductsTableListener();
     }
+
 }

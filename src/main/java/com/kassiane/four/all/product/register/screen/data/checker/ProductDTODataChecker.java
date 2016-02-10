@@ -1,7 +1,6 @@
 package com.kassiane.four.all.product.register.screen.data.checker;
 
 import com.kassiane.four.all.product.register.dto.ProductDTO;
-import com.kassiane.four.all.product.register.formatter.PriceFormatter;
 
 public class ProductDTODataChecker {
 
@@ -38,13 +37,8 @@ public class ProductDTODataChecker {
         return true;
     }
 
-    public ProductDTO checkedProductDTO() {
-        if (this.checkName() && this.checkPrice()) {
-            final PriceFormatter priceFormatter = new PriceFormatter();
-            final String priceString = priceFormatter.formatPrice(this.productModel.getProductPrice());
-            return new ProductDTO(this.productModel.getProductName(), priceString, this.productModel.getImageIcon(),
-                    this.productModel.getImageFile());
-        }
-        return this.productModel;
+    public void checkProduct() {
+        this.checkName();
+        this.checkPrice();
     }
 }

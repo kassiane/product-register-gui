@@ -139,7 +139,7 @@ public class ProductEdittionView {
     }
 
     public ProductDTO clearProductDTO() {
-        this.productModel = new ProductDTO("", "", this.defaultImage, null);
+        this.productModel = new ProductDTO(0, "", "", this.defaultImage, null);
         this.setFields(this.productModel);
         return this.productModel;
     }

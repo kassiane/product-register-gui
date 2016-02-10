@@ -16,7 +16,7 @@ public class ProductEdittionController {
 
         this.productEdittionListener = new ProductEdittionListeners(productEdittion, productService);
         this.productEdittionListener.addListeners();
-        this.productModel = new ProductDTO("", "", this.productEdittion.getDefaultImage(), null);
+        this.productModel = new ProductDTO(0, "", "", this.productEdittion.getDefaultImage(), null);
     }
 
     public ProductEdittionView getProductEdittion() {
