@@ -8,6 +8,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class ProductDTO {
+
     private final long id;
     private final String productName;
     private final String productPrice;

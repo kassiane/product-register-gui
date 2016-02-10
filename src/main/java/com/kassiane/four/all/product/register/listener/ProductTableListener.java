@@ -1,5 +1,7 @@
 package com.kassiane.four.all.product.register.listener;
 
+import java.sql.SQLException;
+
 import javax.swing.JOptionPane;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -42,7 +44,12 @@ public class ProductTableListener implements TableModelListener {
         final ProductDTOToProductMapper productDTOToProductMapper = new ProductDTOToProductMapper();
         final Product newProduct = productDTOToProductMapper.mapToProduct(productToUpdate);
 
-        this.productService.updateProduct(newProduct);
+        try {
+            this.productService.updateProduct(newProduct);
+        } catch (final SQLException e1) {
+            JOptionPane.showMessageDialog(this.productRegisterView.getProductsTable(), e1.getMessage(), "Erro!",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 
 }

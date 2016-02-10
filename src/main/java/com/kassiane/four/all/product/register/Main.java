@@ -17,9 +17,13 @@ import com.kassiane.four.all.product.register.view.ProductRegisterView;
 
 public class Main extends JFrame {
 
+    private static final long serialVersionUID = 7111965847615977120L;
+
+    private static ApplicationContext context;
+
     public static void main(final String[] args) {
 
-        final ApplicationContext context = new ClassPathXmlApplicationContext("spring-Database.xml");
+        context = new ClassPathXmlApplicationContext("spring-Database.xml");
         final ProductDAO productDAO = (ProductDAO) context.getBean("productDAOImpl");
 
         final ProductService productService = new ProductService(productDAO);
@@ -41,6 +45,7 @@ public class Main extends JFrame {
                         defaultProductRegisterImageIcon);
                 final ProductRegisterListeners productRegisterListeners = new ProductRegisterListeners(productEdittionController,
                         productRegisterView, productService);
+                productRegisterListeners.addListeners();
             }
 
         });

@@ -18,10 +18,4 @@
       class="com.kassiane.four.all.product.register.service.dao.impl.ProductDAOImpl">
       <property name="dataSource"  ref="dataSource" />    
    </bean>
-      
-   <!-- Definition for TestProductDAOImpl bean 
-   <bean id="productDAOTest" 
-      class="com.kassiane.four.all.product.register.service.dao.impl.ProductDAOTest">
-      <property name="dataSource"  ref="dataSource" />    
-   </bean-->   
 </beans>

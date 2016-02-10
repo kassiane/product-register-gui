@@ -17,7 +17,7 @@ public class DefaultImage {
         try {
             this.imageIcon = ImageIO.read(this.in);
         } catch (final IOException e) {
-            // TODO Auto-generated catch block
+            System.err.println("Erro parsing a imagem padrão.");
             e.printStackTrace();
         }
     }

@@ -34,6 +34,7 @@ public class ProductEdittionAction {
         final FileNameExtensionFilter filter = new FileNameExtensionFilter("Image Files", "jpg", "png", "gif", "jpeg");
         final JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileFilter(filter);
+        fileChooser.setAcceptAllFileFilterUsed(false);
         final int returnValue = fileChooser.showOpenDialog(null);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             final long productId = this.productEdittionView.getProductModel().getProductId();
@@ -46,9 +47,9 @@ public class ProductEdittionAction {
                 final Image image = ImageIO.read(imageFile);
                 final ImageIconResizer imageIconResizer = new ImageIconResizer();
                 imageIcon = imageIconResizer.imageToImageIconResized(image, ProductEdittionView.IMAGE_HEIGHT);
-            } catch (final IOException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+            } catch (final IOException e) {
+                JOptionPane.showMessageDialog(this.productEdittionView.getJDialog(), "Erro processando a imagem.", "Erro!",
+                        JOptionPane.ERROR_MESSAGE);
             }
             final ProductDTO productModel = new ProductDTO(productId, productName, productPrice, imageIcon, imageFile);
             this.productEdittionView.setProductModel(productModel);
@@ -82,7 +83,6 @@ public class ProductEdittionAction {
         } catch (SQLException | IOException e) {
             JOptionPane.showMessageDialog(this.productEdittionView.getJDialog(), e.getMessage(), "Erro!",
                     JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
         } catch (final IllegalArgumentException e) {
             JOptionPane.showMessageDialog(this.productEdittionView.getJDialog(), e.getMessage(), "Erro!",
                     JOptionPane.ERROR_MESSAGE);

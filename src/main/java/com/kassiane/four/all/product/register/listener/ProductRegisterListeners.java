@@ -17,7 +17,6 @@ public class ProductRegisterListeners {
         this.productRegisterView = productRegister;
         this.productService = productService;
 
-        this.addListeners();
     }
 
     private void addNewProductButtonListener() {
@@ -26,15 +25,15 @@ public class ProductRegisterListeners {
 
     private void addProductEdittionListener() {
         this.productEdittionController
-                .getProductEdittion()
-                .getConfirmButton()
-        .addPropertyChangeListener(
-                        new ConfirmButtonPropertyChangeListener(this.productRegisterView, this.productEdittionController));
+        .getProductEdittion()
+        .getConfirmButton()
+                .addPropertyChangeListener(
+                new ConfirmButtonPropertyChangeListener(this.productRegisterView, this.productEdittionController));
     }
 
     private void addProductsTableListener() {
         this.productRegisterView.getProductsTable().getModel()
-                .addTableModelListener(new ProductTableListener(this.productRegisterView, this.productService));
+        .addTableModelListener(new ProductTableListener(this.productRegisterView, this.productService));
     }
 
     public void addListeners() {
