@@ -4,29 +4,27 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.kassiane.four.all.product.register.controller.ProductEdittionController;
 import com.kassiane.four.all.product.register.image.util.DefaultImage;
 import com.kassiane.four.all.product.register.listener.ProductRegisterListeners;
 import com.kassiane.four.all.product.register.service.ProductService;
-import com.kassiane.four.all.product.register.service.dao.ProductDAO;
 import com.kassiane.four.all.product.register.view.ProductEdittionView;
 import com.kassiane.four.all.product.register.view.ProductRegisterView;
 
+@SpringBootApplication
 public class Main extends JFrame {
 
     private static final long serialVersionUID = 7111965847615977120L;
 
-    private static ApplicationContext context;
+    private static ProductService productService;
 
     public static void main(final String[] args) {
 
-        context = new ClassPathXmlApplicationContext("spring-Database.xml");
-        final ProductDAO productDAO = (ProductDAO) context.getBean("productDAOImpl");
-
-        final ProductService productService = new ProductService(productDAO);
+        SpringApplication.run(Main.class, args);
 
         final ImageIcon defaultProductEdittionImageIcon = new DefaultImage()
                 .getDefaultImageIcon(ProductEdittionView.IMAGE_HEIGHT);
@@ -40,15 +38,20 @@ public class Main extends JFrame {
 
                 final ProductEdittionView productEdittionView = new ProductEdittionView(defaultProductEdittionImageIcon);
                 final ProductEdittionController productEdittionController = new ProductEdittionController(productEdittionView,
-                        productService);
-                final ProductRegisterView productRegisterView = new ProductRegisterView(productService,
+                        Main.productService);
+                final ProductRegisterView productRegisterView = new ProductRegisterView(Main.productService,
                         defaultProductRegisterImageIcon);
                 final ProductRegisterListeners productRegisterListeners = new ProductRegisterListeners(productEdittionController,
-                        productRegisterView, productService);
+                        productRegisterView, Main.productService);
                 productRegisterListeners.addListeners();
             }
 
         });
 
+    }
+
+    @Autowired
+    public void setProductService(final ProductService productService) {
+        Main.productService = productService;
     }
 }
