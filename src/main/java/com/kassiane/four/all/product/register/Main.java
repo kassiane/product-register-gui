@@ -4,9 +4,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import com.kassiane.four.all.product.register.controller.ProductEdittionController;
 import com.kassiane.four.all.product.register.image.util.DefaultImage;
@@ -20,11 +20,11 @@ public class Main extends JFrame {
 
     private static final long serialVersionUID = 7111965847615977120L;
 
-    private static ProductService productService;
-
     public static void main(final String[] args) {
 
-        SpringApplication.run(Main.class, args);
+        final ConfigurableApplicationContext context = SpringApplication.run(Main.class, args);
+
+        final ProductService productService = context.getBean(ProductService.class);
 
         final ImageIcon defaultProductEdittionImageIcon = new DefaultImage()
                 .getDefaultImageIcon(ProductEdittionView.IMAGE_HEIGHT);
@@ -38,11 +38,11 @@ public class Main extends JFrame {
 
                 final ProductEdittionView productEdittionView = new ProductEdittionView(defaultProductEdittionImageIcon);
                 final ProductEdittionController productEdittionController = new ProductEdittionController(productEdittionView,
-                        Main.productService);
-                final ProductRegisterView productRegisterView = new ProductRegisterView(Main.productService,
+                        productService);
+                final ProductRegisterView productRegisterView = new ProductRegisterView(productService,
                         defaultProductRegisterImageIcon);
                 final ProductRegisterListeners productRegisterListeners = new ProductRegisterListeners(productEdittionController,
-                        productRegisterView, Main.productService);
+                        productRegisterView, productService);
                 productRegisterListeners.addListeners();
             }
 
@@ -50,8 +50,4 @@ public class Main extends JFrame {
 
     }
 
-    @Autowired
-    public void setProductService(final ProductService productService) {
-        Main.productService = productService;
-    }
 }
